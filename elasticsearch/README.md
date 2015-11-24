@@ -67,3 +67,36 @@ Also open these ports from AWS management console.
 ```
 sudo service elasticsearch
 ```
+
+## Loading the data
+
+* First create the index using the script at [`load/create\_index.sh`](load/create_index,sh):
+
+```bash
+bash load/create_index.sh
+```
+
+* Load the data using the bulk loader python script at [`load/esload.py`](load/esload.py):
+```bash
+python load/esload.py --data load/sample/table.dat
+```
+
+## Running the benchmarks
+
+### Latency
+
+* Run the latency benchmark using the script at [`perf/eslatency.sh`](perf/eslatency.sh):
+
+```bash
+python load/eslatency.py --type search --queries perf/sample/queries
+python load/eslatency.py --type get
+```
+
+### Throughput
+
+* Run the throughput benchmark using the script at [`perf/esthroughput.sh`](perf/esthroughput.sh):
+
+```bash
+python load/esthroughput.py --type search --queries perf/sample/queries --numthreads 1
+python load/esthroughput.py --type get --numthreads 1
+```
