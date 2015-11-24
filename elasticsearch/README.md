@@ -70,7 +70,7 @@ sudo service elasticsearch
 
 ## Loading the data
 
-* First create the index using the script at [`load/create\_index.sh`](load/create_index,sh):
+* First create the index using the script at [`load/create_index.sh`](load/create_index,sh):
 
 ```bash
 bash load/create_index.sh
@@ -88,8 +88,8 @@ python load/esload.py --data load/sample/table.dat
 * Run the latency benchmark using the script at [`perf/eslatency.sh`](perf/eslatency.sh):
 
 ```bash
-python load/eslatency.py --type search --queries perf/sample/queries
-python load/eslatency.py --type get
+python load/eslatency.py --benchtype search --queries perf/sample/queries
+python load/eslatency.py --benchtype get
 ```
 
 ### Throughput
@@ -97,6 +97,6 @@ python load/eslatency.py --type get
 * Run the throughput benchmark using the script at [`perf/esthroughput.sh`](perf/esthroughput.sh):
 
 ```bash
-python load/esthroughput.py --type search --queries perf/sample/queries --numthreads 1
-python load/esthroughput.py --type get --numthreads 1
+python load/esthroughput.py --benchtype search --queries perf/sample/queries --numthreads 1
+python load/esthroughput.py --benchtype get --numthreads 1
 ```
