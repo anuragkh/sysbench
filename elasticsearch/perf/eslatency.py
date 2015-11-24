@@ -28,7 +28,7 @@ def bench_search(query_file, index):
 
 
 def bench_get(record_count, index, doc_type):
-  ids = random.sample(range(0, record_count), min(10000, record_count))
+  ids = random.sample(range(0, record_count), min(100000, record_count))
   for i in ids:
     start = datetime.now()
     res = es.get(index=index, doc_type=doc_type, id=i)
