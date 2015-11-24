@@ -2,15 +2,13 @@
 
 ## EC2 instance setup
 
-* c3.8xlarge instance
-* Amazon Linux AMI 2015.09.1 (HVM), SSD Volume Type - ami-60b6c60a
+* _Instance Type:_ c3.8xlarge instance
+* _AMI Type:_ Amazon Linux AMI 2015.09.1 (HVM), SSD Volume Type - ami-60b6c60a
 * Install Elasticsearch using the following commands:
 
 ```bash
-\# Add GPG key
 sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
 
-\# Add repository
 echo "[elasticsearch-2.x]
 name=Elasticsearch repository for 2.x packages
 baseurl=http://packages.elastic.co/elasticsearch/2.x/centos
@@ -18,6 +16,50 @@ gpgcheck=1
 gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
 enabled=1" | sudo tee /etc/yum.repos.d/elasticsearch.repo
 
-\# Install elasticsearch
 sudo yum install -y elasticsearch
 ```
+
+* You might need to mount one (or both) instance store volumes:
+
+```bash
+sudo mkdir /media/ephemeral1/
+sudo mount /dev/xvdc /media/ephemeral1/
+sudo chown ec2-user:ec2-user -R /media
+chmod a+w -R /media
+```
+
+* Update `/etc/elasticsearch/elasticsearch.yml` to use the instance store as data paths.
+
+```
+...
+
+path.data: /media/ephemeral0,/media/ephemeral1
+
+...
+```
+
+* Also add the following lines to the ~/.bash\_prfile:
+
+```bash
+ES\_HEAP\_SIZE="30g"
+export ES\_HEAP\_SIZE
+```
+
+Finally, `source` bash\_profile so that the environment variable is available to Elasticsearch:
+
+```bash
+source ~/.bash\_profile
+```
+
+* Add `iptable` rules:
+
+```bash
+sudo iptables -L -n
+sudo iptables -A INPUT -p tcp -m tcp --dport 9200 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport 9300 -j ACCEPT
+sudo service iptables save
+```
+
+Also open these ports from AWS management console.
+
+* Start the Elasticsearch service
