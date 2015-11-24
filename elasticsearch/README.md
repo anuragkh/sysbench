@@ -41,14 +41,14 @@ path.data: /media/ephemeral0,/media/ephemeral1
 * Also add the following lines to the ~/.bash\_prfile:
 
 ```bash
-ES\_HEAP\_SIZE="30g"
-export ES\_HEAP\_SIZE
+ES_HEAP_SIZE="30g"
+export ES_HEAP_SIZE
 ```
 
 Finally, `source` bash\_profile so that the environment variable is available to Elasticsearch:
 
 ```bash
-source ~/.bash\_profile
+source ~/.bash_profile
 ```
 
 * Add `iptable` rules:
@@ -62,4 +62,8 @@ sudo service iptables save
 
 Also open these ports from AWS management console.
 
-* Start the Elasticsearch service
+* Start the Elasticsearch service:
+
+```
+sudo service elasticsearch
+```
