@@ -63,7 +63,7 @@ def main(argv):
       input_file = arg
     elif opt in ('-i', '--index'):
       index = arg
-    elif opt in ('-t', '--type'): 
+    elif opt in ('-t', '--type'):
       doc_type = arg
     elif opt in ('-s', '--seed'):
       seed = int(arg)
