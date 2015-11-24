@@ -19,22 +19,22 @@ def bench_search(query_file, index):
       field_id, query = line.strip().split('|', 2)
       count = 0
       start = datetime.now()
-      qbody = {'query': {'match': {'field%d' % field_id: query}}}
+      qbody = {'query': {'match': {'field%s' % field_id: query}}}
       res = es.search(index=index, body=qbody, fields=[], size=100000, query_cache=False)
       for _ in res['hits']['hits']:
         count += 1
       end = datetime.now()
-      print '%s\t%d\t%d' % (query, count, us(end - start))
+      print '%d\t%d' % (count, us(end - start))
 
 
 def bench_get(record_count, index, doc_type):
-  ids = random.sample(range(0, record_count), 10000)
+  ids = random.sample(range(0, record_count), min(10000, record_count))
   for i in ids:
     start = datetime.now()
     res = es.get(index=index, doc_type=doc_type, id=i)
-    length = len(res['_source']['article'])
+    length = len(res['_source'])
     end = datetime.now()
-    print '%s\t%d' % (length, us(end - start))
+    print '%d\t%s\t%d' % (i, length, us(end - start))
 
 
 def main(argv):
@@ -70,7 +70,7 @@ def main(argv):
   host = 'http://%s:9200' % es_server
   global es
   es = Elasticsearch(hosts=[host], timeout=600)
-  record_count = es.count(index=index)
+  record_count = es.count(index=index)['count']
 
   if bench_type == 'search':
     bench_search(query_file, index)
