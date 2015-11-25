@@ -35,7 +35,6 @@ def load_data(input_file, index, doc_type, seed):
         print 'success: %d failed: %s' % (successful, doc_no - successful - seed)
 
   if len(docs) > 0:
-    print docs
     docs_iter = iter(docs)
     (added, tmp) = helpers.bulk(es, docs_iter)
     successful += added
