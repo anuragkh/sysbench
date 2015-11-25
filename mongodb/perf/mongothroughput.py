@@ -34,9 +34,10 @@ class BenchmarkThread(threading.Thread):
   def bench_get(self):
     print '[Thread %d] Benchmarking get...' % self.thread_id
 
+    qid = 0
+
     # Warmup
     print '[Thread %d] Warmup phase...' % self.thread_id
-    qid = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.WARMUP_TIME:
       query = self.queries[qid]
@@ -45,7 +46,6 @@ class BenchmarkThread(threading.Thread):
 
     # Measure
     print '[Thread %d] Measure phase...' % self.thread_id
-    qid = 0
     query_count = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.MEASURE_TIME:
@@ -59,7 +59,6 @@ class BenchmarkThread(threading.Thread):
 
     # Cooldown
     print '[Thread %d] Cooldown phase...' % self.thread_id
-    qid = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.COOLDOWN_TIME:
       query = self.queries[qid]
@@ -72,9 +71,10 @@ class BenchmarkThread(threading.Thread):
   def bench_search(self):
     print '[Thread %d] Benchmarking search...' % self.thread_id
 
+    qid = 0
+
     # Warmup
     print '[Thread %d] Warmup phase...' % self.thread_id
-    qid = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.WARMUP_TIME:
       query = self.queries[qid]
@@ -86,7 +86,6 @@ class BenchmarkThread(threading.Thread):
 
     # Measure
     print '[Thread %d] Measure phase...' % self.thread_id
-    qid = 0
     query_count = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.MEASURE_TIME:
@@ -103,7 +102,6 @@ class BenchmarkThread(threading.Thread):
 
     # Cooldown
     print '[Thread %d] Cooldown phase...' % self.thread_id
-    qid = 0
     start = datetime.now()
     while secs(datetime.now() - start) < self.COOLDOWN_TIME:
       query = self.queries[qid]
