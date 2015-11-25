@@ -25,7 +25,7 @@ sudo yum install -y elasticsearch
 sudo mkdir /media/ephemeral1/
 sudo mount /dev/xvdc /media/ephemeral1/
 sudo chown ec2-user:ec2-user -R /media
-chmod a+w -R /media
+sudo chmod a+w -R /media
 ```
 
 * Update `/etc/elasticsearch/elasticsearch.yml` to use the instance store as data paths.
@@ -70,7 +70,7 @@ sudo service elasticsearch
 
 ## Loading the data
 
-* First create the index using the script at [`load/create_index.sh`](load/create_index,sh):
+* First create the index using the script at [`load/create_index.sh`](load/create_index.sh):
 
 ```bash
 bash load/create_index.sh
@@ -85,7 +85,7 @@ python load/esload.py --data load/sample/table.dat
 
 ### Latency
 
-* Run the latency benchmark using the script at [`perf/eslatency.sh`](perf/eslatency.sh):
+* Run the latency benchmark using the script at [`perf/eslatency.py`](perf/eslatency.py):
 
 ```bash
 python load/eslatency.py --benchtype search --queries perf/sample/queries
@@ -94,7 +94,7 @@ python load/eslatency.py --benchtype get
 
 ### Throughput
 
-* Run the throughput benchmark using the script at [`perf/esthroughput.sh`](perf/esthroughput.sh):
+* Run the throughput benchmark using the script at [`perf/esthroughput.py`](perf/esthroughput.py):
 
 ```bash
 python load/esthroughput.py --benchtype search --queries perf/sample/queries --numthreads 1
