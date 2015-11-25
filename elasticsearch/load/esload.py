@@ -27,7 +27,6 @@ def load_data(input_file, index, doc_type, seed):
       docs.append(doc)
       doc_no += 1
       if len(docs) == batch_size:
-        print docs
         docs_iter = iter(docs)
         (added, tmp) = helpers.bulk(es, docs_iter)
         successful += added
