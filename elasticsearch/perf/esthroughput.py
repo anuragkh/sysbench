@@ -131,6 +131,26 @@ class BenchmarkThread(threading.Thread):
     writeLock.release()
 
 
+def load_queries(bench_type, query_file, record_count):
+  queries = []
+  print '[Main Thread] Loading queries...'
+  if bench_type == 'search':
+    if query_file == '':
+      print 'Error: Must specify query-file for search benchmark!'
+      sys.exit(2)
+    with open(query_file) as ifp:
+      for line in ifp:
+        field_id, query = line.strip().split('|', 2)
+        qbody = {'query': {'match': {'field%s' % field_id: query}}}
+        queries.append(qbody)
+  elif bench_type == 'get':
+    queries = random.sample(range(0, record_count), min(100000, record_count))
+  else:
+    print 'Error: Invalid benchtype %s' % bench_type
+
+  return queries
+
+
 def main(argv):
   es_server = 'localhost'
   query_file = ''
@@ -162,28 +182,14 @@ def main(argv):
     elif opt in ('-n', '--numthreads'):
       num_threads = int(arg)
 
-  queries = []
-  print '[Main Thread] Loading queries...'
-  if bench_type == 'search':
-    if query_file == '':
-      print 'Error: Must specify query-file for search benchmark!'
-      sys.exit(2)
-    with open(query_file) as ifp:
-      for line in ifp:
-        field_id, query = line.strip().split('|', 2)
-        qbody = {'query': {'match': {'field%s' % field_id: query}}}
-        queries.append(qbody)
-  elif bench_type == 'get':
-    es = Elasticsearch(hosts=['http://%s:9200' % es_server], timeout=600)
-    count = es.count(index=index)['count']
-    del es
-    queries = random.sample(range(0, count), min(100000, count))
-  else:
-    print 'Error: Invalid benchtype %s' % bench_type
+  es = Elasticsearch(hosts=['http://%s:9200' % es_server], timeout=600)
+  count = es.count(index=index)['count']
+  del es
 
   threads = []
   print '[Main Thread] Initializing %d threads...' % num_threads
   for i in range(0, num_threads):
+    queries = load_queries(bench_type=bench_type, query_file=query_file, record_count=count)
     thread = BenchmarkThread(thread_id=i, bench_type=bench_type, es_server=es_server, index=index, doc_type=doc_type,
                              queries=queries)
     threads.append(thread)
