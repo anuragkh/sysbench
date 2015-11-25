@@ -5,7 +5,6 @@ import getopt
 import random
 import threading
 from datetime import datetime
-
 from pymongo import MongoClient
 
 writeLock = threading.Lock()
@@ -133,6 +132,26 @@ class BenchmarkThread(threading.Thread):
     writeLock.release()
 
 
+def load_queries(bench_type, query_file, record_count):
+  queries = []
+  print '[Main Thread] Loading queries...'
+  if bench_type == 'search':
+    if query_file == '':
+      print 'Error: Must specify query-file for search benchmark!'
+      sys.exit(2)
+    with open(query_file) as ifp:
+      for line in ifp:
+        field_id, query = line.strip().split('|', 2)
+        qbody = {'field%s' % field_id: query}
+        queries.append(qbody)
+  elif bench_type == 'get':
+    queries = random.sample(range(0, record_count), min(100000, record_count))
+  else:
+    print 'Error: Invalid benchtype %s' % bench_type
+
+  return queries
+
+
 def main(argv):
   mongo_server = 'localhost'
   query_file = ''
@@ -164,28 +183,14 @@ def main(argv):
     elif opt in ('-n', '--numthreads'):
       num_threads = int(arg)
 
-  queries = []
-  print '[Main Thread] Loading queries...'
-  if bench_type == 'search':
-    if query_file == '':
-      print 'Error: Must specify query-file for search benchmark!'
-      sys.exit(2)
-    with open(query_file) as ifp:
-      for line in ifp:
-        field_id, query = line.strip().split('|', 2)
-        qbody = {'field%s' % field_id: query}
-        queries.append(qbody)
-  elif bench_type == 'get':
-    client = MongoClient('mongodb://%s:27017' % mongo_server)
-    count = client[database][collection].count()
-    client.close()
-    queries = random.sample(range(0, count), min(100000, count))
-  else:
-    print 'Error: Invalid benchtype %s' % bench_type
+  client = MongoClient('mongodb://%s:27017' % mongo_server)
+  count = client[database][collection].count()
+  client.close()
 
   threads = []
   print '[Main Thread] Initializing %d threads...' % num_threads
   for i in range(0, num_threads):
+    queries = load_queries(bench_type=bench_type, query_file=query_file, record_count=count)
     thread = BenchmarkThread(thread_id=i, bench_type=bench_type, mongo_server=mongo_server, db=database,
                              collection=collection, queries=queries)
     threads.append(thread)
