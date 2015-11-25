@@ -2,6 +2,8 @@
 import csv
 from optparse import OptionParser
 
+from pymongo import MongoClient
+
 
 # converts a array of csv-columns to a mongodb json line
 def convert_csv_to_json(id, csv_line):
@@ -23,10 +25,13 @@ parser.add_option("-s", "--seed", dest="seed", action="store", help="seed", defa
 
 (options, args) = parser.parse_args()
 
+client = MongoClient()
+count = client['bench']['data'].count()
+
 # parsing and converting the csvfile
 csvreader = csv.reader(open(options.csvfile, 'rb'), delimiter=options.delimiter)
 jsonfile = open(options.jsonfile, 'wb')
-doc_no = options.seed
+doc_no = count
 while True:
   try:
     csv_current_line = csvreader.next()
