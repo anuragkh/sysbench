@@ -32,7 +32,7 @@ def load_data(input_file, index, doc_type, seed):
         successful += added
         docs = []
       if doc_no % 100000 == 0:
-        print 'success: %d failed: %s' % (successful, doc_no - successful)
+        print 'success: %d failed: %s' % (successful, doc_no - successful - seed)
 
   if len(docs) > 0:
     print docs
@@ -40,14 +40,14 @@ def load_data(input_file, index, doc_type, seed):
     (added, tmp) = helpers.bulk(es, docs_iter)
     successful += added
 
-  print 'Finished! Inserted: %d Failed: %d' % (successful, doc_no - successful)
+  print 'Finished! Inserted: %d Failed: %d' % (successful, doc_no - successful - seed)
 
 
 def main(argv):
   input_file = ''
   index = 'bench'
   doc_type = 'data'
-  seed = 0
+  seed = -1
   help_message = 'esload.py -d <data-file> -i <index> -t <type> -s <seed>'
   try:
     opts, args = getopt.getopt(argv, 'hd:i:t:s:', ['data=', 'index=', 'type=', 'seed='])
@@ -69,6 +69,11 @@ def main(argv):
   if input_file == '':
     print 'Error: Must specify data-file!'
     sys.exit(2)
+    
+  if seed == -1:
+    seed = es.count(index=index)['count']
+  
+  print seed
 
   load_data(input_file, index, doc_type, seed)
 
