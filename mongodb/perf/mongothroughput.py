@@ -27,9 +27,9 @@ class BenchmarkThread(threading.Thread):
     self.col = self.client[db][collection]
     print '[Thread %d] Connected.' % thread_id
     self.query_count = len(queries)
-    self.WARMUP_TIME = 10
-    self.MEASURE_TIME = 30
-    self.COOLDOWN_TIME = 10
+    self.WARMUP_TIME = 60
+    self.MEASURE_TIME = 120
+    self.COOLDOWN_TIME = 60
 
   def bench_get(self):
     print '[Thread %d] Benchmarking get...' % self.thread_id
