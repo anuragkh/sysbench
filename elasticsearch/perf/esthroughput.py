@@ -26,9 +26,9 @@ class BenchmarkThread(threading.Thread):
     self.es = Elasticsearch(hosts=['http://%s:9200' % es_server], timeout=600)
     print '[Thread %d] Connected.' % thread_id
     self.query_count = len(queries)
-    self.WARMUP_TIME = 10
-    self.MEASURE_TIME = 30
-    self.COOLDOWN_TIME = 10
+    self.WARMUP_TIME = 60
+    self.MEASURE_TIME = 120
+    self.COOLDOWN_TIME = 60
 
   def bench_get(self):
     print '[Thread %d] Benchmarking get...' % self.thread_id
