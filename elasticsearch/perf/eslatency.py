@@ -20,7 +20,7 @@ def bench_search(query_file, index):
       count = 0
       start = datetime.now()
       qbody = {'query': {'match': {'field%s' % field_id: query}}}
-      res = es.search(index=index, body=qbody, fields=[], size=100000, query_cache=False)
+      res = es.search(index=index, body=qbody, fields=[], size=100000)
       for _ in res['hits']['hits']:
         count += 1
       end = datetime.now()

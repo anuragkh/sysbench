@@ -78,7 +78,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.WARMUP_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000, query_cache=False)
+      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
@@ -90,7 +90,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.MEASURE_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000, query_cache=False)
+      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
@@ -105,7 +105,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.COOLDOWN_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000, query_cache=False)
+      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
