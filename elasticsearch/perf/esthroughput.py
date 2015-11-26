@@ -141,7 +141,7 @@ def load_queries(bench_type, query_file, record_count):
         field_id, query = line.strip().split('|', 2)
         qbody = {'query': {'match': {'field%s' % field_id: query}}}
         queries.append(qbody)
-    queries = random.shuffle(random.sample(queries, min(100000, len(queries))))
+    queries = random.sample(queries, min(100000, len(queries)))
   elif bench_type == 'get':
     queries = random.sample(range(0, record_count), min(100000, record_count))
   else:
