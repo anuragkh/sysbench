@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 curl -XPOST localhost:9200/bench -d '{
 	"settings" : {
 		"number_of_shards": 16,
