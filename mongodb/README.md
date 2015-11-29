@@ -46,7 +46,7 @@ storage:
 
 ```
 
-* Start the Elasticsearch service:
+* Start the MongoDB service:
 
 ```
 sudo service mongod start
