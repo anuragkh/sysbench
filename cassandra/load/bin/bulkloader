@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Runs the succinct shell
+##
+
+usage="Usage: bulkloader <csv-path> [<seed>]"
+
+# if less than 1 args specified, show usage
+if [ $# -lt 1 ]; then
+  echo $usage
+  echo "$# arguments provided"
+  exit 1
+fi
+
+bin="`dirname "$0"`"
+bin="`cd "$bin"; pwd`"
+
+. "$bin/succinct-config.sh"
+
+JAR_PATH="$LOADER_PREFIX/target"
+
+JAR_COUNT=0
+
+for f in "${JAR_PATH}"/cassandra-loader-*-jar-with-dependencies.jar; do
+  if [[ ! -e "$f" ]]; then
+    echo "Failed to find BulkLoader assembly in $JAR_PATH" 1>&2
+    echo "You need to build Succinct-Core before running this program" 1>&2
+    exit 1
+  fi
+  LOADER_JAR="$f"
+  JAR_COUNT=$((JAR_COUNT+1))
+done
+
+if [ "$JAR_COUNT" -gt "1" ]; then
+  echo "Found multiple BulkLoader assemblies in $JAR_PATH" 1>&2
+  ls "${JAR_PATH}"/cassandra-loader-*-jar-with-dependencies.jar 1>&2
+  echo "Please remove all but one jar." 1>&2
+  exit 1
+fi
+
+java -cp $LOADER_JAR com.anuragkh.cassandra.bulkloader.DataLoader $@
