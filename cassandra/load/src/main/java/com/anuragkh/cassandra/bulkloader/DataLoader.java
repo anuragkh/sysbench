@@ -61,7 +61,6 @@ public class DataLoader {
     schemaStr += "and compaction = {\'class\' : \'SizeTieredCompactionStrategy\' } ";
     schemaStr += "and compression = { \'sstable_compression\' : \'\' };";
     SCHEMA = schemaStr;
-    System.out.println(SCHEMA);
   }
 
   //  public static final String SCHEMA = String.format("CREATE TABLE %s.%s (" +
@@ -101,7 +100,6 @@ public class DataLoader {
     }
     insertStmtStr += ")";
     INSERT_STMT = insertStmtStr;
-    System.out.println(INSERT_STMT);
   }
 
   public static final CsvPreference CSV_PREFERENCE =
