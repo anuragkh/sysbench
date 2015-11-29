@@ -63,19 +63,6 @@ public class DataLoader {
     SCHEMA = schemaStr;
   }
 
-  //  public static final String SCHEMA = String.format("CREATE TABLE %s.%s (" +
-  //    "ticker ascii, " +
-  //    "date timestamp, " +
-  //    "open decimal, " +
-  //    "high decimal, " +
-  //    "low decimal, " +
-  //    "close decimal, " +
-  //    "volume bigint, " +
-  //    "adj_close decimal, " +
-  //    "PRIMARY KEY (ticker, date) " +
-  //    ") WITH CLUSTERING ORDER BY (date DESC)", KEYSPACE, TABLE);
-
-
   /**
    * INSERT statement to bulk load.
    * It is like prepared statement. You fill in place holder for each data.
@@ -105,12 +92,6 @@ public class DataLoader {
   public static final CsvPreference CSV_PREFERENCE =
     (new CsvPreference.Builder('\"', 124, "\r\n")).build();
 
-  //  public static final String INSERT_STMT = String.format("INSERT INTO %s.%s (" +
-  //    "ticker, date, open, high, low, close, volume, adj_close" +
-  //    ") VALUES (" +
-  //    "?, ?, ?, ?, ?, ?, ?, ?" +
-  //    ")", KEYSPACE, TABLE);
-
   public static void main(String[] args) {
     if (args.length < 1 || args.length > 2) {
       System.out.println("usage: bulkload <filePath> [<seed>]");
@@ -139,7 +120,7 @@ public class DataLoader {
       .withPartitioner(new Murmur3Partitioner());
     CQLSSTableWriter writer = builder.build();
 
-    Long id = seed;
+
     try (
       BufferedReader reader = new BufferedReader(new FileReader(filePath));
       CsvListReader csvReader = new CsvListReader(reader, CSV_PREFERENCE)
@@ -149,25 +130,26 @@ public class DataLoader {
 
       // Write to SSTable while reading data
       List<String> line;
+      Long id = seed;
       while ((line = csvReader.read()) != null) {
-        // We use Java types here based on
-        // http://www.datastax.com/drivers/java/2.0/com/datastax/driver/core/DataType.Name.html#asJavaClass%28%29
         ArrayList<Object> values = new ArrayList<>();
         values.add(id);
         values.addAll(line);
+        if (values.size() != numColumns) {
+          System.out.println("Error: Row Size=" + values.size() + " Expected size=" + numColumns);
+          System.exit(-1);
+        }
         writer.addRow(values);
-        //        writer.addRow(ticker, DATE_FORMAT.parse(line.get(0)), new BigDecimal(line.get(1)),
-        //          new BigDecimal(line.get(2)), new BigDecimal(line.get(3)), new BigDecimal(line.get(4)),
-        //          Long.parseLong(line.get(5)), new BigDecimal(line.get(6)));
+        id++;
       }
     } catch (InvalidRequestException | IOException e) {
       e.printStackTrace();
     }
 
-
     try {
       writer.close();
     } catch (IOException ignore) {
+      System.out.println("[WARNING] Could not close writer.");
     }
   }
 }
