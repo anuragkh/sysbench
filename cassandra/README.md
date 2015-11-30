@@ -46,7 +46,16 @@ sudo service cassandra start
 
 ## Loading the data
 
-* Generate the SSTables using the bulk loader script at [`load/bin/bulkloader`](load/bin/bulkloader) script:
+* Build the bulkloader using maven:
+
+```bash
+cd load
+mvn clean package
+cd ../
+```
+
+* Generate the SSTables using the bulkloader script at [`load/bin/bulkloader`](load/bin/bulkloader) script:
+
 ```bash
 bash load/bin/bulkloader load/sample/table.dat
 ```
