@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-curl -XPOST localhost:9200/bench -d '{
+curl -XPOST localhost:9200/bench?pretty -d '{
 	"settings" : {
 		"number_of_shards": 16,
 		"number_of_replicas": 0
