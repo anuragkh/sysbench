@@ -115,7 +115,7 @@ class BenchmarkThread(threading.Thread):
     return throughput
 
   def bench_get_search(self):
-    print '[Thread %d] Benchmarking search...' % self.thread_id
+    print '[Thread %d] Benchmarking get+search...' % self.thread_id
 
     qid = 0
 
@@ -226,9 +226,9 @@ def load_queries(bench_type, query_file, table, record_count):
     query_count = max(len(get_queries), len(search_queries)) * 2
     for i in range(0, query_count):
       if i % 2 == 0:
-        queries.append(get_queries[i / 2])
+        queries.append(get_queries[(i / 2) % len(get_queries)])
       else:
-        queries.append(search_queries[i / 2])
+        queries.append(search_queries[(i / 2) % len(search_queries)])
 
   else:
     print 'Error: Invalid benchtype %s' % bench_type
