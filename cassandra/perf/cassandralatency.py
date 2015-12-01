@@ -45,10 +45,11 @@ def main(argv):
   keyspace = 'bench'
   table = 'data'
   bench_type = 'search'
-  help_msg = 'cassandrabench.py -c <cassandra-server> -q <queries> -k <keyspace> -t <table> -b <bench-type>'
+  count = -1
+  help_msg = 'cassandrabench.py -c <cassandra-server> -q <queries> -k <keyspace> -t <table> -b <bench-type> -r <record-count>'
   try:
-    opts, args = getopt.getopt(argv, 'hc:q:k:t:b:',
-                               ['cassandra-server', 'queries=', 'keyspace=', 'table=', 'benchtype='])
+    opts, args = getopt.getopt(argv, 'hc:q:k:t:b:r:',
+                               ['cassandra-server', 'queries=', 'keyspace=', 'table=', 'benchtype=', 'recordcount='])
   except getopt.GetoptError:
     print help_msg
     sys.exit(2)
@@ -66,6 +67,8 @@ def main(argv):
       table = arg
     elif opt in ('-b', '--benchtype'):
       bench_type = arg
+    elif opt in ('-r', '--recordcount'):
+      count = int(arg)
   if bench_type == 'search' and query_file == '':
     print 'Error: Must specify query-file for search benchmark!'
     sys.exit(2)
@@ -74,7 +77,10 @@ def main(argv):
   global session
   session = cluster.connect(keyspace)
   session.row_factory = dict_factory
-  record_count = session.execute('SELECT count(id) FROM %s' % table)[0]['system.count(id)']
+  if count == -1:
+    record_count = session.execute('SELECT count(id) FROM %s' % table)[0]['system.count(id)']
+  else:
+    record_count = count
 
   if bench_type == 'search':
     bench_search(query_file, table)

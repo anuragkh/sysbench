@@ -243,10 +243,11 @@ def main(argv):
   table = 'data'
   bench_type = 'search'
   num_threads = 1
-  help_msg = 'esbench.py -c <cassandra-server> -q <queries> -k <keyspace> -t <table> -b <bench-type> -n <num-threads>'
+  record_count = -1
+  help_msg = 'esbench.py -c <cassandra-server> -q <queries> -k <keyspace> -t <table> -b <bench-type> -n <num-threads> -r <record-count>'
   try:
-    opts, args = getopt.getopt(argv, 'hc:q:k:t:b:',
-                               ['cassandra-server', 'queries=', 'keyspace=', 'table=', 'benchtype=', 'numthreads='])
+    opts, args = getopt.getopt(argv, 'hc:q:k:t:b:r:',
+                               ['cassandra-server', 'queries=', 'keyspace=', 'table=', 'benchtype=', 'numthreads=', 'recordcount='])
   except getopt.GetoptError:
     print help_msg
     sys.exit(2)
@@ -266,12 +267,17 @@ def main(argv):
       bench_type = arg
     elif opt in ('-n', '--numthreads'):
       num_threads = int(arg)
+    elif opt in ('-r', '--recordcount'):
+      record_count = int(arg)
 
   global cluster
   cluster = Cluster([cassandra_server])
   session = cluster.connect(keyspace)
   session.row_factory = dict_factory
-  count = session.execute('SELECT count(id) FROM %s' % table)[0]['system.count(id)']
+  if record_count == -1:
+    count = session.execute('SELECT count(id) FROM %s' % table)[0]['system.count(id)']
+  else:
+    count = record_count
 
   threads = []
   print '[Main Thread] Initializing %d threads...' % num_threads
