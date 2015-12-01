@@ -2,7 +2,7 @@
 
 A collection of scripts for benchmarking popular open-source data stores:
 
-* Cassandra [TODO]
+* Cassandra
 * Elasticsearch
 * MongoDB
 

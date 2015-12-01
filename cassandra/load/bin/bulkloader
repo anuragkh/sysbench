@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Runs the succinct shell
+# Runs the bulkloader
 ##
 
 usage="Usage: bulkloader <csv-path> [<seed>]"
@@ -15,7 +15,7 @@ fi
 bin="`dirname "$0"`"
 bin="`cd "$bin"; pwd`"
 
-. "$bin/succinct-config.sh"
+. "$bin/loader-config.sh"
 
 JAR_PATH="$LOADER_PREFIX/target"
 

@@ -46,10 +46,24 @@ sudo service cassandra start
 
 ## Loading the data
 
-* Load the data using the bulk loader script at [`load/cassandraload.sh`](load/cassandraload.sh):
+* Build the bulkloader using maven:
 
 ```bash
-bash load/cassandraload.sh load/sample/table.dat
+cd load
+mvn clean package
+cd ../
+```
+
+* Generate the SSTables using the bulkloader script at [`load/bin/bulkloader`](load/bin/bulkloader) script:
+
+```bash
+bash load/bin/bulkloader load/sample/table.dat
+```
+
+* Load the data using the sstableloader tool:
+
+```bash
+sstableloader -d localhost data/bench/data
 ```
 
 ## Running the benchmarks
