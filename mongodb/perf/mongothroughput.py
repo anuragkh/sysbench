@@ -115,11 +115,69 @@ class BenchmarkThread(threading.Thread):
 
     return throughput
 
+  def bench_get_search(self):
+    print '[Thread %d] Benchmarking get+search...' % self.thread_id
+
+    qid = 0
+
+    # Warmup
+    print '[Thread %d] Warmup phase...' % self.thread_id
+    start = datetime.now()
+    while secs(datetime.now() - start) < self.WARMUP_TIME:
+      query = self.queries[qid]
+      if qid % 2 == 0:
+        self.col.find_one({'_id': query})
+      else:
+        count = 0
+        res = self.col.find(query, {})
+        for _ in res:
+          count += 1
+      qid = (qid + 1) % self.query_count
+
+    # Measure
+    print '[Thread %d] Measure phase...' % self.thread_id
+    query_count = 0
+    start = datetime.now()
+    while secs(datetime.now() - start) < self.MEASURE_TIME:
+      query = self.queries[qid]
+      if qid % 2 == 0:
+        self.col.find_one({'_id': query})
+      else:
+        count = 0
+        res = self.col.find(query, {})
+        for _ in res:
+          count += 1
+      qid = (qid + 1) % self.query_count
+      query_count += 1
+
+    total_time = secs(datetime.now() - start)
+    throughput = float(query_count) / total_time
+
+    # Cooldown
+    print '[Thread %d] Cooldown phase...' % self.thread_id
+    start = datetime.now()
+    while secs(datetime.now() - start) < self.COOLDOWN_TIME:
+      query = self.queries[qid]
+      if qid % 2 == 0:
+        self.col.find_one({'_id': query})
+      else:
+        count = 0
+        res = self.col.find(query, {})
+        for _ in res:
+          count += 1
+      qid = (qid + 1) % self.query_count
+
+    print '[Thread %d] Benchmark complete.' % self.thread_id
+
+    return throughput
+
   def run(self):
     if self.bench_type == 'get':
       throughput = self.bench_get()
     elif self.bench_type == 'search':
       throughput = self.bench_search()
+    elif self.bench_type == 'get-search':
+      throughput = self.bench_get_search()
     else:
       print '[Thread %d] Error: Invalid bench_type %s.' % (self.thread_id, self.bench_type)
       sys.exit(2)
@@ -145,6 +203,25 @@ def load_queries(bench_type, query_file, record_count):
     queries = random.sample(queries, min(100000, len(queries)))
   elif bench_type == 'get':
     queries = random.sample(range(0, record_count), min(100000, record_count))
+  elif bench_type == 'get-search':
+    get_queries = random.sample(range(0, record_count), min(100000, record_count))
+    search_queries = []
+    if query_file == '':
+      print 'Error: Must specify query-file for search benchmark!'
+      sys.exit(2)
+    with open(query_file) as ifp:
+      for line in ifp:
+        field_id, query = line.strip().split('|', 2)
+        qbody = {'field%s' % field_id: query}
+        search_queries.append(qbody)
+    search_queries = random.sample(search_queries, min(100000, len(search_queries)))
+
+    query_count = max(len(get_queries), len(search_queries)) * 2
+    for i in range(0, query_count):
+      if i % 2 == 0:
+        queries.append(get_queries[(i / 2) % len(get_queries)])
+      else:
+        queries.append(search_queries[(i / 2) % len(search_queries)])
   else:
     print 'Error: Invalid benchtype %s' % bench_type
 
