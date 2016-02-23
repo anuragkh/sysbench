@@ -7,9 +7,17 @@ sudo mkdir -p /mnt/log
 sudo chown elasticsearch:elasticsearch /mnt/log
 
 # Change location of elasticsearch.yml accordingly
+publish_host=`curl wgetip.com`
 echo "
-node:
-  name: elastic-${HOSTNAME}
+network.publish_host: $publish_host
+
+transport.tcp.port: 9300
+
+http.port: 9200
+
+cluster.name: elastic-benchmark
+
+node.name: elastic-${HOSTNAME}
 
 path:
   data: /mnt/data
@@ -22,15 +30,14 @@ discovery:
     any_group: true
     availability_zones: us-east-1b
 
-cloud:
-  aws:
+cloud.aws:
     access_key: $AWS_ACCESS_KEY
     secret_key: $AWS_SECRET_KEY
 
 index:
   number_of_shards: 40
   numer_of_replicas: 0
-" | sudo tee -a /opt/bitnami/elasticsearch/config/elasticsearch.yml
+" | sudo tee /opt/bitnami/elasticsearch/config/elasticsearch.yml
 
 sudo /opt/bitnami/elasticsearch/bin/plugin install cloud-aws
 sudo /opt/bitnami/ctlscript.sh restart elasticsearch
