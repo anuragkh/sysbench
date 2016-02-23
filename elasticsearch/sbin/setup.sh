@@ -29,10 +29,11 @@ discovery:
     groups: elastic-benchmark
     any_group: true
     availability_zones: us-east-1b
+    host_type: public_ip
 
 cloud.aws:
-    access_key: $AWS_ACCESS_KEY
-    secret_key: $AWS_SECRET_KEY
+  access_key: $AWS_ACCESS_KEY
+  secret_key: $AWS_SECRET_KEY
 
 index:
   number_of_shards: 40
