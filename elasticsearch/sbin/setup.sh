@@ -1,4 +1,3 @@
-
 # Assumes server is running Ubuntu; modify if running on a different distribution
 sudo apt-get update # sudo yum update
 
@@ -17,18 +16,21 @@ path:
   logs: /mnt/log
 	
 discovery:
-	type: ec2
-	ec2:
-		groups: elastic-benchmark
-		any_group: true
-		availability_zones: us-east-1b
+  type: ec2
+  ec2:
+    groups: elastic-benchmark
+    any_group: true
+    availability_zones: us-east-1b
 	
 cloud:
-	aws:
-		access_key: $AWS_ACCESS_KEY
-		secret_key: $AWS_SECRET_KEY
+  aws:
+    access_key: $AWS_ACCESS_KEY
+    secret_key: $AWS_SECRET_KEY
 		
 index:
-	number_of_shards: 40
-	numer_of_replicas: 0
-" | sudo tee /opt/bitnami/elasticsearch/config/elasticsearch.yml
+  number_of_shards: 40
+  numer_of_replicas: 0
+" | sudo tee -a /opt/bitnami/elasticsearch/config/elasticsearch.yml
+
+sudo /opt/bitnami/elasticsearch/bin/plugin install cloud-aws
+sudo /opt/bitnami/ctlscript.sh elasticsearch restart
