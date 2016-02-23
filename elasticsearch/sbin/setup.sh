@@ -4,7 +4,7 @@ sudo apt-get update # sudo yum update
 
 sudo mkdir -p /mnt/data
 sudo chown elasticsearch:elasticsearch /mnt/data
-sudo mkdir /mnt/log
+sudo mkdir -p /mnt/log
 sudo chown elasticsearch:elasticsearch /mnt/log
 
 # Change location of elasticsearch.yml accordingly
