@@ -14,19 +14,19 @@ node:
 path:
   data: /mnt/data
   logs: /mnt/log
-	
+
 discovery:
   type: ec2
   ec2:
     groups: elastic-benchmark
     any_group: true
     availability_zones: us-east-1b
-	
+
 cloud:
   aws:
     access_key: $AWS_ACCESS_KEY
     secret_key: $AWS_SECRET_KEY
-		
+
 index:
   number_of_shards: 40
   numer_of_replicas: 0
