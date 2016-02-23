@@ -33,4 +33,4 @@ index:
 " | sudo tee -a /opt/bitnami/elasticsearch/config/elasticsearch.yml
 
 sudo /opt/bitnami/elasticsearch/bin/plugin install cloud-aws
-sudo /opt/bitnami/ctlscript.sh elasticsearch restart
+sudo /opt/bitnami/ctlscript.sh restart elasticsearch
