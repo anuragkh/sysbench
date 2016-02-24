@@ -3,8 +3,9 @@
 import sys
 import getopt
 from elasticsearch import Elasticsearch, helpers
+import socket
 
-es = Elasticsearch()
+es = Elasticsearch(socket.gethostname())
 batch_size = 100
 
 
