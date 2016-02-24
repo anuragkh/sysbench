@@ -9,10 +9,11 @@ sudo chown elasticsearch:elasticsearch /mnt/log
 sudo /opt/bitnami/elasticsearch/bin/plugin install cloud-aws
 
 # Change location of elasticsearch.yml accordingly
-host=`curl wgetip.com`
+publish_host=`curl wgetip.com`
+host=`hostname -I`
 echo "
 network.host: $host
-network.publish_host: $host
+network.publish_host: $publish_host
 
 transport.tcp.port: 9300
 
