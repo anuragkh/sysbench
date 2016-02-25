@@ -38,7 +38,7 @@ path.data: /media/ephemeral0,/media/ephemeral1
 ...
 ```
 
-* Also add the following lines to the ~/.bash\_prfile:
+* Also add the following lines to the ~/.bash\_profile:
 
 ```bash
 ES_HEAP_SIZE="30g"
