@@ -112,7 +112,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.WARMUP_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+      res = self.es.search(index=self.index, body=query, fields=[], size=10000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
@@ -124,7 +124,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.MEASURE_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+      res = self.es.search(index=self.index, body=query, fields=[], size=10000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
@@ -139,7 +139,7 @@ class BenchmarkThread(threading.Thread):
     while secs(datetime.now() - start) < self.COOLDOWN_TIME:
       query = self.queries[qid]
       count = 0
-      res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+      res = self.es.search(index=self.index, body=query, fields=[], size=10000)
       for _ in res['hits']['hits']:
         count += 1
       qid = (qid + 1) % self.query_count
@@ -164,7 +164,7 @@ class BenchmarkThread(threading.Thread):
         aid += 1
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -180,7 +180,7 @@ class BenchmarkThread(threading.Thread):
         aid += 1
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -199,7 +199,7 @@ class BenchmarkThread(threading.Thread):
         aid += 1
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -277,7 +277,7 @@ class BenchmarkThread(threading.Thread):
         self.es.get(index=self.index, doc_type=self.doc_type, id=query)
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -293,7 +293,7 @@ class BenchmarkThread(threading.Thread):
         self.es.get(index=self.index, doc_type=self.doc_type, id=query)
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -312,7 +312,7 @@ class BenchmarkThread(threading.Thread):
         self.es.get(index=self.index, doc_type=self.doc_type, id=query)
       else:
         count = 0
-        res = self.es.search(index=self.index, body=query, fields=[], size=100000)
+        res = self.es.search(index=self.index, body=query, fields=[], size=10000)
         for _ in res['hits']['hits']:
           count += 1
       qid = (qid + 1) % self.query_count
@@ -368,7 +368,7 @@ def load_queries(bench_type, query_file, append_file, record_count):
     
   elif bench_type == 'get':
     
-    queries = random.sample(range(0, record_count), min(100000, record_count))
+    queries = [random.randrange(0, record_count) for _ in range(min(100000, record_count))]
     
   elif bench_type == 'search-append':
     
@@ -406,7 +406,7 @@ def load_queries(bench_type, query_file, append_file, record_count):
         
   elif bench_type == 'get-append':
     
-    get_queries = random.sample(range(0, record_count), min(100000, record_count))
+    get_queries = [random.randrange(0, record_count) for _ in range(min(100000, record_count))]
     
     append_queries = []
     if append_file == '':
